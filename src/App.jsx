@@ -1,5 +1,5 @@
 import BoardViewer from "./components/BoardViewer.jsx";
-import { meta, principle, specs, bom } from "./data.js";
+import { meta, principle, specs, bom, routing } from "./data.js";
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -8,9 +8,7 @@ function Topbar() {
     <header className="topbar">
       <div className="wrap topbar__inner">
         <div className="brand">
-          <span className="brand__dot" />
           <span>{meta.title}</span>
-          <span className="brand__tag">{meta.klass}</span>
         </div>
         <nav className="nav">
           <a href="#principle">Принцип</a>
@@ -18,6 +16,7 @@ function Topbar() {
           <a href="#board">Плата</a>
           <a href="#specs">Характеристики</a>
           <a href="#bom">Элементы</a>
+          <a href="#routing">Тех. карта</a>
         </nav>
       </div>
     </header>
@@ -30,7 +29,7 @@ function Hero() {
       <div className="wrap">
         <p className="hero__eyebrow">Интерактивное техническое руководство</p>
         <h1>
-          FM-радиомикрофон на трёх <em>транзисторах</em>
+          FM-передатчик на трёх <em>транзисторах</em>
         </h1>
         <p className="lead">{meta.subtitle}. Звук с электретного микрофона
           усиливается и модулирует ВЧ-несущую, которая излучается в эфир
@@ -188,6 +187,74 @@ function Bom() {
   );
 }
 
+function Routing() {
+  return (
+    <section className="section" id="routing">
+      <div className="wrap">
+        <div className="section__head">
+          <span className="section__num">06</span>
+          <div>
+            <h2>Технологическая карта</h2>
+            <p className="section__sub">Сборка и монтаж печатного узла — маршрут операций</p>
+          </div>
+        </div>
+
+        <div className="routing-doc">
+          <div className="routing-doc__head">
+            <div className="routing-doc__meta">
+              <div>
+                <span className="routing-doc__label">Организация</span>
+                <span className="routing-doc__value">{routing.header.org}</span>
+              </div>
+              <div>
+                <span className="routing-doc__label">Кафедра</span>
+                <span className="routing-doc__value">{routing.header.dept}</span>
+              </div>
+              <div>
+                <span className="routing-doc__label">Изделие</span>
+                <span className="routing-doc__value">{routing.header.product}</span>
+              </div>
+              <div>
+                <span className="routing-doc__label">Обозначение</span>
+                <span className="routing-doc__value routing-doc__value--mono">{routing.header.designation}</span>
+              </div>
+            </div>
+
+            <div className="routing-doc__badges">
+              {routing.badges.map((b) => (
+                <span className="chip" key={b}>{b}</span>
+              ))}
+            </div>
+          </div>
+
+          <ol className="routing-ops">
+            {routing.operations.map((op) => (
+              <li className={`routing-op routing-op--${op.shop === "ОТК" ? "qc" : "shop"}`} key={op.n}>
+                <div className="routing-op__side">
+                  <span className="routing-op__shop">{op.shop === "ОТК" ? "ОТК" : `Цех ${op.shop}`}</span>
+                  <span className="routing-op__num">№ {op.n}</span>
+                </div>
+                <div className="routing-op__body">
+                  <div className="routing-op__title">
+                    <h3>{op.title}</h3>
+                    {op.iot && <span className="routing-op__iot">{op.iot}</span>}
+                  </div>
+                  <p className="routing-op__text">{op.content}</p>
+                  {op.tool && (
+                    <p className="routing-op__tool">
+                      <span>Инструмент:</span> {op.tool}
+                    </p>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function Footer() {
   return (
     <footer className="footer">
@@ -195,7 +262,7 @@ function Footer() {
         <div className="footer__authors">{meta.authors}</div>
         <div className="footer__group">{meta.group}</div>
         <div className="footer__meta">
-          {meta.klass} · {meta.title} · собрано на React + Vite + Three.js
+          {meta.title}
         </div>
       </div>
     </footer>
@@ -213,6 +280,7 @@ export default function App() {
         <Board />
         <Specs />
         <Bom />
+        <Routing />
       </main>
       <Footer />
     </>
